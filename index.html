@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 7135)
-Total output lines: 406
-
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -120,7 +117,142 @@ Total output lines: 406
           <desc id="svgDesc">中子源发射两束代表多束的平行中子波，入射到相邻原子面并散射到角分辨探测器。波长和入射角可调，探测器亮峰随布拉格条件实时变化。</desc>
           <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" /></marker></defs>
           <text x="78" y="52" text-anchor="middle" class="label">中子源</text>
-          <rect x="52" y="70" width="54" height="178" rx="11" class="source…2135 tokens truncated…er = Math.max(1, Math.round(ratio));
+          <rect x="52" y="70" width="54" height="178" rx="11" class="source"></rect>
+          <g aria-hidden="true"><circle cx="79" cy="102" r="7" class="source-core"></circle><circle cx="79" cy="159" r="7" class="source-core"></circle><circle cx="79" cy="216" r="7" class="source-core"></circle></g>
+          <text x="79" y="275" text-anchor="middle" class="hint">多束平行中子</text>
+
+          <text x="430" y="52" text-anchor="middle" class="label">晶体中的原子面</text>
+          <rect x="350" y="84" width="178" height="256" rx="12" class="crystal"></rect>
+          <line x1="365" y1="160" x2="513" y2="160" class="plane"></line>
+          <line x1="365" y1="290" x2="513" y2="290" class="plane"></line>
+          <g aria-hidden="true">
+            <circle cx="388" cy="160" r="8" class="atom"></circle><circle cx="430" cy="160" r="8" class="atom"></circle><circle cx="472" cy="160" r="8" class="atom"></circle>
+            <circle cx="388" cy="290" r="8" class="atom"></circle><circle cx="430" cy="290" r="8" class="atom"></circle><circle cx="472" cy="290" r="8" class="atom"></circle>
+          </g>
+          <text x="506" y="143" text-anchor="end" class="fine">原子面 1</text><text x="506" y="273" text-anchor="end" class="fine">原子面 2</text>
+          <line x1="547" y1="160" x2="547" y2="290" class="geometry" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+          <text x="554" y="222" class="hint">晶面间距 d</text>
+
+          <g id="geometryLayer" aria-hidden="true"></g>
+          <g id="incomingLayer" aria-label="入射中子波"></g>
+          <g id="scatteredLayer" aria-label="散射中子波"></g>
+          <g id="wavefrontLayer" aria-hidden="true"></g>
+
+          <text x="690" y="52" text-anchor="middle" class="label">角分辨探测器</text>
+          <path d="M687 94 Q751 217 687 340" class="detector"></path>
+          <circle id="peakRing" cx="722" cy="215" r="13" class="peak-ring" opacity=".25"></circle>
+          <circle id="peak" cx="722" cy="215" r="7" class="peak" opacity=".32"></circle>
+          <text x="722" y="370" text-anchor="middle" class="hint">衍射亮峰</text>
+
+          <line x1="52" y1="398" x2="770" y2="398" class="guide"></line>
+          <text id="sceneCaption" x="410" y="424" text-anchor="middle" class="hint">调节参数以观察相位关系</text>
+        </svg>
+      </article>
+
+      <aside class="panel controls-panel" aria-label="参数控制与智能建议">
+        <h2 class="control-title">参数控制</h2>
+        <p class="control-copy">使用滑杆改变 λ 或 θ；智能助手会即时评估是否满足布拉格条件。</p>
+        <div class="control-block">
+          <label class="range-label" for="lambda">中子波长 λ <output id="lambdaValue" for="lambda">1.95 Å</output></label>
+          <input id="lambda" type="range" min="0.80" max="2.80" value="1.95" step="0.05">
+          <div class="scale"><span>0.80 Å</span><span>2.80 Å</span></div>
+        </div>
+        <div class="control-block">
+          <label class="range-label" for="theta">入射角 θ <output id="thetaValue" for="theta">18.0°</output></label>
+          <input id="theta" type="range" min="5" max="27" value="18" step="0.5">
+          <div class="scale"><span>5°</span><span>27°</span></div>
+        </div>
+        <div class="button-row">
+          <button id="matchButton" class="button primary" type="button">智能匹配一阶亮峰</button>
+          <button id="pauseButton" class="button" type="button" aria-pressed="false">暂停波动动画</button>
+        </div>
+        <div class="divider"></div>
+        <section class="assistant-card" aria-labelledby="assistantTitle">
+          <div class="assistant-row"><span class="assistant-mark" aria-hidden="true">λ</span><h3 id="assistantTitle">智能调参助手</h3></div>
+          <p id="assistantAdvice" aria-live="polite">正在计算路径差与相位关系。</p>
+        </section>
+        <div class="metric-grid" aria-label="实时衍射计算">
+          <div class="metric"><span class="metric-label">路径差 ΔL</span><strong id="deltaValue" class="metric-value orange">1.95 Å</strong></div>
+          <div class="metric"><span class="metric-label">ΔL / λ</span><strong id="ratioValue" class="metric-value">1.00</strong></div>
+          <div class="metric"><span class="metric-label">相位差</span><strong id="phaseValue" class="metric-value">0.0°</strong></div>
+          <div class="metric"><span class="metric-label">匹配级次</span><strong id="orderValue" class="metric-value green">1 级</strong></div>
+        </div>
+        <div class="intensity">
+          <div class="intensity-head"><span>探测器相对峰强</span><strong id="intensityValue" class="intensity-value">100%</strong></div>
+          <div class="track" role="progressbar" aria-label="探测器相对峰强" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div id="intensityFill" class="fill"></div></div>
+        </div>
+      </aside>
+    </section>
+    <p class="footer-note">布拉格条件：ΔL = 2d sinθ = nλ。图中采用两束波代表多个相邻原子面的相干散射。</p>
+  </main>
+
+  <script>
+    (() => {
+      const dSpacing = 3.15;
+      const source = document.getElementById('beamline');
+      const lambdaInput = document.getElementById('lambda');
+      const thetaInput = document.getElementById('theta');
+      const lambdaValue = document.getElementById('lambdaValue');
+      const thetaValue = document.getElementById('thetaValue');
+      const deltaValue = document.getElementById('deltaValue');
+      const ratioValue = document.getElementById('ratioValue');
+      const phaseValue = document.getElementById('phaseValue');
+      const orderValue = document.getElementById('orderValue');
+      const intensityValue = document.getElementById('intensityValue');
+      const intensityFill = document.getElementById('intensityFill');
+      const advice = document.getElementById('assistantAdvice');
+      const matchChip = document.getElementById('matchChip');
+      const caption = document.getElementById('sceneCaption');
+      const geometryLayer = document.getElementById('geometryLayer');
+      const incomingLayer = document.getElementById('incomingLayer');
+      const scatteredLayer = document.getElementById('scatteredLayer');
+      const wavefrontLayer = document.getElementById('wavefrontLayer');
+      const peak = document.getElementById('peak');
+      const peakRing = document.getElementById('peakRing');
+      const matchButton = document.getElementById('matchButton');
+      const pauseButton = document.getElementById('pauseButton');
+      const ns = 'http://www.w3.org/2000/svg';
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let animationEnabled = !reduceMotion;
+      let startTime = performance.now();
+      let frame = null;
+
+      const create = (name, attributes = {}, text = '') => {
+        const element = document.createElementNS(ns, name);
+        Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
+        if (text) element.textContent = text;
+        return element;
+      };
+      const clamp = value => Math.max(0, Math.min(1, value));
+      const pointAt = (start, end, distance) => {
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const length = Math.hypot(dx, dy);
+        return { x: start.x + (dx / length) * distance, y: start.y + (dy / length) * distance };
+      };
+      const wavePath = (start, end, phase, amplitude = 6) => {
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const length = Math.hypot(dx, dy);
+        const direction = { x: dx / length, y: dy / length };
+        const normal = { x: -direction.y, y: direction.x };
+        const wavelengthPx = 44;
+        let path = '';
+        for (let s = 0; s <= length; s += 3) {
+          const offset = amplitude * Math.sin((s / wavelengthPx) * Math.PI * 2 - phase);
+          const x = start.x + direction.x * s + normal.x * offset;
+          const y = start.y + direction.y * s + normal.y * offset;
+          path += `${s === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)} `;
+        }
+        return { path, length, direction, normal, wavelengthPx };
+      };
+      const metrics = () => {
+        const lambda = Number(lambdaInput.value);
+        const theta = Number(thetaInput.value);
+        const thetaRad = theta * Math.PI / 180;
+        const delta = 2 * dSpacing * Math.sin(thetaRad);
+        const ratio = delta / lambda;
+        const order = Math.max(1, Math.round(ratio));
         const offset = ratio - order;
         const phaseDeg = Math.abs(offset * 360);
         const intensity = Math.pow(Math.cos(Math.PI * offset), 2);
