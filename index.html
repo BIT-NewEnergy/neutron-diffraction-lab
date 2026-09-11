@@ -29,11 +29,14 @@
     button { cursor: pointer; }
     .app { width: min(1440px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 42px; }
     .topbar { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin-bottom: 22px; }
+    .top-actions { display: flex; flex: 0 0 auto; align-items: center; justify-content: end; gap: 12px; flex-wrap: wrap; }
     .eyebrow { margin: 0 0 7px; color: var(--blue); font-size: .79rem; letter-spacing: .12em; text-transform: uppercase; }
     h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.5rem); letter-spacing: -.035em; }
     .topbar p { margin: 7px 0 0; max-width: 51rem; color: var(--muted); line-height: 1.55; }
     .live-state { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 9px; color: var(--green); font-size: .9rem; }
     .live-dot { width: 9px; height: 9px; border-radius: 999px; background: var(--green); box-shadow: 0 0 0 5px rgba(158, 228, 147, .12); }
+    .qa-jump { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 10px 14px; border: 1px solid rgba(106,198,255,.72); border-radius: 10px; color: #061221; background: linear-gradient(135deg, #a4e0ff, var(--blue)); box-shadow: 0 8px 20px rgba(52,157,221,.22); font-size: .92rem; font-weight: 800; text-decoration: none; transition: transform .18s ease, box-shadow .18s ease; }
+    .qa-jump:hover { transform: translateY(-1px); box-shadow: 0 11px 24px rgba(52,157,221,.34); }
     .workspace { display: grid; grid-template-columns: minmax(0, 1.72fr) minmax(300px, .78fr); gap: 18px; align-items: stretch; }
     .panel { border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(145deg, rgba(16, 41, 68, .92), rgba(7, 21, 37, .94)); box-shadow: var(--shadow); }
     .diagram-panel { overflow: hidden; min-height: 560px; display: flex; flex-direction: column; }
@@ -90,27 +93,29 @@
     .track { height: 10px; overflow: hidden; border-radius: 999px; background: #18344f; }
     .fill { height: 100%; width: 0%; border-radius: inherit; background: linear-gradient(90deg, var(--orange-deep), var(--orange)); transition: width .18s ease; }
     .footer-note { margin: 12px 2px 0; color: var(--muted); font-size: .8rem; line-height: 1.5; }
-    .qa-panel { margin-top: 18px; padding: 24px; }
+    .qa-panel { margin-top: 18px; padding: 24px; border-color: rgba(106,198,255,.48); background: linear-gradient(135deg, rgba(17,52,82,.96), rgba(7,21,37,.96)); }
     .qa-heading { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
     .qa-heading h2 { margin: 0; font-size: 1.15rem; }
     .qa-heading p { margin: 6px 0 0; max-width: 46rem; color: var(--muted); line-height: 1.55; }
     .qa-status { flex: 0 0 auto; padding: 7px 10px; border: 1px solid rgba(158, 228, 147, .42); border-radius: 999px; color: var(--green); background: rgba(158, 228, 147, .07); font-size: .78rem; white-space: nowrap; }
-    .qa-form { display: flex; gap: 10px; margin-top: 16px; }
-    .qa-input { flex: 1; min-width: 0; min-height: 46px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; outline: none; color: var(--ink); background: rgba(5,16,29,.46); }
+    .qa-form { display: flex; gap: 12px; margin-top: 18px; }
+    .qa-input { flex: 1; min-width: 0; min-height: 52px; padding: 12px 15px; border: 1px solid #3d6f96; border-radius: 12px; outline: none; color: var(--ink); background: rgba(5,16,29,.58); font-size: 1rem; }
     .qa-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(106,198,255,.12); }
-    .qa-submit { min-height: 46px; padding: 10px 17px; border: 1px solid rgba(106,198,255,.62); border-radius: 10px; color: #061221; background: var(--blue); font-weight: 750; }
-    .qa-submit:hover { background: #98dcff; }
-    .qa-examples { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 13px; }
-    .qa-examples > span { color: var(--muted); font-size: .8rem; }
-    .qa-chip { padding: 7px 10px; border: 1px solid rgba(66,100,128,.72); border-radius: 999px; color: var(--ink); background: rgba(5,16,29,.3); font-size: .8rem; }
-    .qa-chip:hover { border-color: var(--blue); color: var(--blue); }
+    .qa-submit { min-width: 148px; min-height: 52px; padding: 11px 20px; border: 1px solid rgba(106,198,255,.7); border-radius: 12px; color: #061221; background: linear-gradient(135deg, #9de0ff, var(--blue)); box-shadow: 0 8px 19px rgba(52,157,221,.24); font-size: 1rem; font-weight: 850; }
+    .qa-submit:hover { transform: translateY(-1px); background: #b4e8ff; box-shadow: 0 11px 24px rgba(52,157,221,.34); }
+    .qa-examples { margin-top: 16px; }
+    .qa-prompt { margin: 0 0 9px; color: var(--blue); font-size: .88rem; font-weight: 750; }
+    .qa-chip-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; }
+    .qa-chip { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 50px; padding: 10px 12px; border: 1px solid rgba(90,151,194,.7); border-radius: 11px; color: var(--ink); background: rgba(5,16,29,.36); font-size: .84rem; font-weight: 650; text-align: left; }
+    .qa-chip::after { content: '→'; color: var(--blue); font-size: 1rem; font-weight: 800; }
+    .qa-chip:hover { border-color: var(--blue); color: #fff; background: rgba(106,198,255,.1); }
     .qa-answer { margin-top: 17px; padding: 15px 16px; border: 1px solid rgba(106,198,255,.32); border-radius: 13px; background: rgba(6,25,45,.72); }
     .qa-answer[hidden] { display: none; }
     .answer-kicker { margin: 0 0 6px; color: var(--blue); font-size: .78rem; font-weight: 750; letter-spacing: .06em; }
     .answer-text { margin: 0; color: var(--ink); line-height: 1.7; white-space: pre-line; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-    @media (max-width: 980px) { .workspace { grid-template-columns: 1fr; } .diagram-panel { min-height: 0; } .controls-panel { gap: 16px; } }
-    @media (max-width: 640px) { .app { width: min(100% - 24px, 1440px); padding-top: 18px; } .topbar { align-items: start; flex-direction: column; } .panel-heading { padding: 18px 18px 6px; } .match-chip { display: none; } .controls-panel, .qa-panel { padding: 18px; } .beamline { min-height: 350px; padding: 0 2px 8px; } .qa-heading, .qa-form { flex-direction: column; } .qa-status, .qa-submit { width: 100%; } }
+    @media (max-width: 980px) { .workspace { grid-template-columns: 1fr; } .diagram-panel { min-height: 0; } .controls-panel { gap: 16px; } .qa-chip-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 640px) { .app { width: min(100% - 24px, 1440px); padding-top: 18px; } .topbar { align-items: start; flex-direction: column; } .top-actions { width: 100%; justify-content: space-between; } .qa-jump { flex: 1; justify-content: center; } .panel-heading { padding: 18px 18px 6px; } .match-chip { display: none; } .controls-panel, .qa-panel { padding: 18px; } .beamline { min-height: 350px; padding: 0 2px 8px; } .qa-heading, .qa-form { flex-direction: column; } .qa-status, .qa-submit { width: 100%; } .qa-chip-grid { grid-template-columns: 1fr; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
   </style>
 </head>
@@ -122,7 +127,10 @@
         <h1>中子衍射交互实验室</h1>
         <p>调节中子波长 λ 与入射角 θ，观察路径差、相位关系和角分辨探测器上的衍射亮峰如何联动。</p>
       </div>
-      <div class="live-state"><span class="live-dot" aria-hidden="true"></span><span>实时计算中</span></div>
+      <div class="top-actions">
+        <a class="qa-jump" href="#qaTitle" aria-label="跳转到中子衍射学习问答">💬 学习问答</a>
+        <div class="live-state"><span class="live-dot" aria-hidden="true"></span><span>实时计算中</span></div>
+      </div>
     </header>
 
     <section class="workspace" aria-label="中子衍射交互工作台">
@@ -215,16 +223,18 @@
         <label for="qaInput" class="sr-only">输入你的中子衍射问题</label>
         <div class="qa-form">
           <input id="qaInput" class="qa-input" type="text" autocomplete="off" placeholder="例如：为什么路径差等于 nλ 时会出现亮峰？">
-          <button class="qa-submit" type="submit">获取解释</button>
+          <button class="qa-submit" type="submit">✦ 立即提问</button>
         </div>
       </form>
       <div class="qa-examples" aria-label="示例问题">
-        <span>可试试：</span>
-        <button class="qa-chip" type="button" data-question="为什么路径差等于 nλ 时会出现亮峰？">为什么出现亮峰？</button>
-        <button class="qa-chip" type="button" data-question="d、θ 和 λ 分别代表什么？">d、θ、λ 怎么理解？</button>
-        <button class="qa-chip" type="button" data-question="中子衍射为什么适合研究锂离子电池？">为什么研究锂电池？</button>
-        <button class="qa-chip" type="button" data-question="峰位、峰宽和峰强各说明什么？">峰位、峰宽、峰强</button>
-        <button class="qa-chip" type="button" data-question="当前参数是否满足布拉格条件？">检查当前参数</button>
+        <p class="qa-prompt">一键提问：点击任意问题，即刻获得解释</p>
+        <div class="qa-chip-grid">
+          <button class="qa-chip" type="button" data-question="为什么路径差等于 nλ 时会出现亮峰？">亮峰为什么会出现？</button>
+          <button class="qa-chip" type="button" data-question="d、θ 和 λ 分别代表什么？">d、θ、λ 怎么理解？</button>
+          <button class="qa-chip" type="button" data-question="中子衍射为什么适合研究锂离子电池？">为什么研究锂电池？</button>
+          <button class="qa-chip" type="button" data-question="峰位、峰宽和峰强各说明什么？">峰位、峰宽、峰强</button>
+          <button class="qa-chip" type="button" data-question="当前参数是否满足布拉格条件？">检查当前参数</button>
+        </div>
       </div>
       <article id="qaAnswer" class="qa-answer" aria-live="polite">
         <p class="answer-kicker">学习助手</p>
