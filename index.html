@@ -1,0 +1,274 @@
+Warning: truncated output (original token count: 7135)
+Total output lines: 406
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="调节中子波长和入射角，实时观察布拉格条件、相长干涉与衍射亮峰。">
+  <title>中子衍射交互实验室</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2308192d'/%3E%3Cpath d='M8 32h48M8 18h48M8 46h48' stroke='%238cd4ff' stroke-width='3'/%3E%3Ccircle cx='20' cy='18' r='5' fill='%23f9a84b'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f9a84b'/%3E%3Ccircle cx='44' cy='46' r='5' fill='%23f9a84b'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #eaf3ff;
+      --muted: #9eb2c9;
+      --canvas: #061221;
+      --surface: #0b1d32;
+      --surface-2: #102944;
+      --line: #264562;
+      --blue: #6ac6ff;
+      --blue-deep: #1f89c9;
+      --orange: #ffad53;
+      --orange-deep: #de7f22;
+      --green: #9ee493;
+      --red: #ff8a8a;
+      --shadow: 0 18px 44px rgba(0, 0, 0, .22);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: radial-gradient(circle at 75% 5%, #123451 0, transparent 30rem), var(--canvas); color: var(--ink); font-family: Inter, "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .app { width: min(1440px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 42px; }
+    .topbar { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin-bottom: 22px; }
+    .eyebrow { margin: 0 0 7px; color: var(--blue); font-size: .79rem; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.5rem); letter-spacing: -.035em; }
+    .topbar p { margin: 7px 0 0; max-width: 51rem; color: var(--muted); line-height: 1.55; }
+    .live-state { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 9px; color: var(--green); font-size: .9rem; }
+    .live-dot { width: 9px; height: 9px; border-radius: 999px; background: var(--green); box-shadow: 0 0 0 5px rgba(158, 228, 147, .12); }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.72fr) minmax(300px, .78fr); gap: 18px; align-items: stretch; }
+    .panel { border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(145deg, rgba(16, 41, 68, .92), rgba(7, 21, 37, .94)); box-shadow: var(--shadow); }
+    .diagram-panel { overflow: hidden; min-height: 560px; display: flex; flex-direction: column; }
+    .panel-heading { display: flex; justify-content: space-between; align-items: start; gap: 18px; padding: 22px 24px 10px; }
+    .panel-heading h2, .control-title { margin: 0; font-size: 1.1rem; font-weight: 650; }
+    .panel-heading p { margin: 5px 0 0; color: var(--muted); font-size: .9rem; }
+    .match-chip { margin-top: 2px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .78rem; white-space: nowrap; }
+    .match-chip.match { border-color: rgba(158, 228, 147, .55); color: var(--green); background: rgba(158, 228, 147, .08); }
+    .match-chip.mismatch { border-color: rgba(255, 173, 83, .55); color: var(--orange); background: rgba(255, 173, 83, .08); }
+    .beamline { width: 100%; height: auto; display: block; flex: 1; min-height: 405px; padding: 0 8px 12px; }
+    .beamline .label { fill: var(--ink); font-size: 15px; font-weight: 600; }
+    .beamline .hint { fill: var(--muted); font-size: 13px; }
+    .beamline .fine { fill: var(--muted); font-size: 12px; }
+    .beamline .source { fill: #163a5b; stroke: var(--blue); stroke-width: 1.5; }
+    .beamline .source-core { fill: var(--blue); }
+    .beamline .crystal { fill: rgba(255,255,255,.035); stroke: #47718f; stroke-width: 1.4; }
+    .beamline .plane { stroke: #6386a0; stroke-width: 1.1; stroke-dasharray: 7 6; opacity: .85; }
+    .beamline .atom { fill: var(--green); stroke: #d5f5d1; stroke-width: 1.1; }
+    .beamline .guide { fill: none; stroke: #6e879a; stroke-width: 1.1; opacity: .72; }
+    .beamline .incoming { fill: none; stroke: var(--blue); stroke-width: 3; }
+    .beamline .scattered { fill: none; stroke: var(--orange); stroke-width: 3; }
+    .beamline .wavefront { fill: none; stroke: rgba(255,173,83,.9); stroke-width: 1.25; stroke-dasharray: 4 4; }
+    .beamline .geometry { fill: none; stroke: var(--ink); stroke-width: 1.15; opacity: .9; }
+    .beamline .detector { fill: #142e48; stroke: #7e9ab0; stroke-width: 1.5; }
+    .beamline .peak { fill: var(--orange); }
+    .beamline .peak-ring { fill: none; stroke: var(--orange); stroke-width: 2.3; }
+    .controls-panel { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+    .control-copy { margin: -12px 0 0; color: var(--muted); font-size: .9rem; line-height: 1.55; }
+    .control-block { padding-bottom: 4px; }
+    .range-label { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; color: var(--ink); font-size: .94rem; }
+    output { color: var(--blue); font-weight: 700; font-variant-numeric: tabular-nums; }
+    input[type="range"] { width: 100%; margin-top: 13px; accent-color: var(--blue); }
+    .scale { display: flex; justify-content: space-between; margin-top: 4px; color: var(--muted); font-size: .76rem; }
+    .divider { height: 1px; background: var(--line); }
+    .assistant-card { padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: rgba(5, 16, 29, .42); }
+    .assistant-row { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+    .assistant-mark { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; background: rgba(106,198,255,.15); color: var(--blue); font-weight: 800; }
+    .assistant-card h3 { margin: 0; font-size: .92rem; }
+    .assistant-card p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.55; }
+    .button-row { display: grid; grid-template-columns: 1fr; gap: 9px; }
+    .button { min-height: 44px; padding: 10px 13px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--surface-2); transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+    .button:hover { transform: translateY(-1px); border-color: var(--blue); }
+    .button.primary { border-color: rgba(106,198,255,.62); color: #061221; background: var(--blue); font-weight: 700; }
+    .button.primary:hover { border-color: var(--blue); background: #98dcff; }
+    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .metric { padding: 12px; border-radius: 12px; background: rgba(5,16,29,.35); border: 1px solid rgba(66, 100, 128, .48); }
+    .metric-label { color: var(--muted); font-size: .76rem; }
+    .metric-value { display: block; margin-top: 4px; font-size: 1.07rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+    .metric-value.orange { color: var(--orange); }
+    .metric-value.green { color: var(--green); }
+    .intensity { margin-top: auto; }
+    .intensity-head { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 9px; color: var(--ink); font-size: .88rem; }
+    .intensity-value { color: var(--orange); font-weight: 750; font-variant-numeric: tabular-nums; }
+    .track { height: 10px; overflow: hidden; border-radius: 999px; background: #18344f; }
+    .fill { height: 100%; width: 0%; border-radius: inherit; background: linear-gradient(90deg, var(--orange-deep), var(--orange)); transition: width .18s ease; }
+    .footer-note { margin: 12px 2px 0; color: var(--muted); font-size: .8rem; line-height: 1.5; }
+    @media (max-width: 980px) { .workspace { grid-template-columns: 1fr; } .diagram-panel { min-height: 0; } .controls-panel { gap: 16px; } }
+    @media (max-width: 640px) { .app { width: min(100% - 24px, 1440px); padding-top: 18px; } .topbar { align-items: start; flex-direction: column; } .panel-heading { padding: 18px 18px 6px; } .match-chip { display: none; } .controls-panel { padding: 18px; } .beamline { min-height: 350px; padding: 0 2px 8px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Neutron diffraction workbench</p>
+        <h1>中子衍射交互实验室</h1>
+        <p>调节中子波长 λ 与入射角 θ，观察路径差、相位关系和角分辨探测器上的衍射亮峰如何联动。</p>
+      </div>
+      <div class="live-state"><span class="live-dot" aria-hidden="true"></span><span>实时计算中</span></div>
+    </header>
+
+    <section class="workspace" aria-label="中子衍射交互工作台">
+      <article class="panel diagram-panel">
+        <header class="panel-heading">
+          <div><h2>散射与干涉过程</h2><p>两束代表多束平行中子；d 固定为 3.15 Å。</p></div>
+          <span id="matchChip" class="match-chip">计算中</span>
+        </header>
+        <svg id="beamline" class="beamline" viewBox="0 0 820 430" role="img" aria-labelledby="svgTitle svgDesc">
+          <title id="svgTitle">可调参数的中子衍射示意图</title>
+          <desc id="svgDesc">中子源发射两束代表多束的平行中子波，入射到相邻原子面并散射到角分辨探测器。波长和入射角可调，探测器亮峰随布拉格条件实时变化。</desc>
+          <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" /></marker></defs>
+          <text x="78" y="52" text-anchor="middle" class="label">中子源</text>
+          <rect x="52" y="70" width="54" height="178" rx="11" class="source…2135 tokens truncated…er = Math.max(1, Math.round(ratio));
+        const offset = ratio - order;
+        const phaseDeg = Math.abs(offset * 360);
+        const intensity = Math.pow(Math.cos(Math.PI * offset), 2);
+        return { lambda, theta, thetaRad, delta, ratio, order, offset, phaseDeg, intensity, isMatch: Math.abs(offset) < .055 };
+      };
+      const render = now => {
+        const values = metrics();
+        const phase = animationEnabled ? (now - startTime) / 350 : 0;
+        const topHit = { x: 430, y: 160 };
+        const lowerHit = { x: 430, y: 290 };
+        const xSource = 120;
+        const incomingTop = { x: xSource, y: topHit.y - Math.tan(values.thetaRad) * (topHit.x - xSource) };
+        const incomingLower = { x: xSource, y: lowerHit.y - Math.tan(values.thetaRad) * (lowerHit.x - xSource) };
+        const outputX = 625;
+        const outgoingTop = { x: outputX, y: topHit.y - Math.tan(values.thetaRad) * (outputX - topHit.x) };
+        const outgoingLower = { x: outputX, y: lowerHit.y - Math.tan(values.thetaRad) * (outputX - lowerHit.x) };
+        const topInput = wavePath(incomingTop, topHit, phase);
+        const lowerInput = wavePath(incomingLower, lowerHit, phase);
+        const topOutput = wavePath(topHit, outgoingTop, phase);
+        const lowerOutput = wavePath(lowerHit, outgoingLower, phase - values.ratio * Math.PI * 2);
+
+        lambdaValue.textContent = `${values.lambda.toFixed(2)} Å`;
+        thetaValue.textContent = `${values.theta.toFixed(1)}°`;
+        deltaValue.textContent = `${values.delta.toFixed(2)} Å`;
+        ratioValue.textContent = values.ratio.toFixed(2);
+        phaseValue.textContent = `${values.phaseDeg.toFixed(1)}°`;
+        orderValue.textContent = values.isMatch ? `${values.order} 级` : `邻近 ${values.order} 级`;
+        const intensityPercent = Math.round(values.intensity * 100);
+        intensityValue.textContent = `${intensityPercent}%`;
+        intensityFill.style.width = `${intensityPercent}%`;
+        intensityFill.parentElement.setAttribute('aria-valuenow', String(intensityPercent));
+        matchChip.textContent = values.isMatch ? `匹配：${values.order} 级亮峰` : `偏离 ${values.order} 级条件`;
+        matchChip.className = `match-chip ${values.isMatch ? 'match' : 'mismatch'}`;
+        if (values.isMatch) {
+          advice.textContent = `ΔL = ${values.order}λ，两个散射波到达探测器时波峰对齐；信号相长叠加，${values.order} 级衍射亮峰增强。`;
+          caption.textContent = `ΔL = ${values.order}λ：相长干涉，信号叠加增强`;
+        } else {
+          advice.textContent = `当前 ΔL / λ = ${values.ratio.toFixed(2)}，相位差为 ${values.phaseDeg.toFixed(1)}°；可点击“智能匹配一阶亮峰”自动求取 θ。`;
+          caption.textContent = '散射波未完全同相：探测器峰强减弱';
+        }
+
+        geometryLayer.replaceChildren();
+        incomingLayer.replaceChildren();
+        scatteredLayer.replaceChildren();
+        wavefrontLayer.replaceChildren();
+        geometryLayer.append(
+          create('line', { x1: incomingTop.x, y1: incomingTop.y, x2: topHit.x, y2: topHit.y, class: 'guide', 'marker-end': 'url(#arrow)' }),
+          create('line', { x1: incomingLower.x, y1: incomingLower.y, x2: lowerHit.x, y2: lowerHit.y, class: 'guide', 'marker-end': 'url(#arrow)' }),
+          create('line', { x1: topHit.x, y1: topHit.y, x2: outgoingTop.x, y2: outgoingTop.y, class: 'guide', 'marker-end': 'url(#arrow)' }),
+          create('line', { x1: lowerHit.x, y1: lowerHit.y, x2: outgoingLower.x, y2: outgoingLower.y, class: 'guide', 'marker-end': 'url(#arrow)' })
+        );
+        const lambdaStart = pointAt(incomingTop, topHit, 44);
+        const lambdaEnd = pointAt(incomingTop, topHit, 88);
+        geometryLayer.append(
+          create('line', { x1: lambdaStart.x, y1: lambdaStart.y - 17, x2: lambdaEnd.x, y2: lambdaEnd.y - 17, class: 'geometry', 'marker-start': 'url(#arrow)', 'marker-end': 'url(#arrow)' }),
+          create('text', { x: (lambdaStart.x + lambdaEnd.x) / 2, y: Math.min(lambdaStart.y, lambdaEnd.y) - 28, class: 'hint', 'text-anchor': 'middle' }, `中子波长 λ = ${values.lambda.toFixed(2)} Å`),
+          create('path', { d: `M ${topHit.x - 48} ${topHit.y} A 48 48 0 0 0 ${topHit.x - 47 * Math.cos(values.thetaRad)} ${topHit.y - 47 * Math.sin(values.thetaRad)}`, class: 'geometry' }),
+          create('text', { x: topHit.x - 64, y: topHit.y - 30, class: 'hint' }, `入射角 θ = ${values.theta.toFixed(1)}°`),
+          create('text', { x: 585, y: 320, class: 'hint', 'text-anchor': 'middle' }, `路径差 ΔL = 2d sinθ = ${values.delta.toFixed(2)} Å = ${values.ratio.toFixed(2)}λ`)
+        );
+        incomingLayer.append(create('path', { d: topInput.path, class: 'incoming' }), create('path', { d: lowerInput.path, class: 'incoming' }));
+        scatteredLayer.append(create('path', { d: topOutput.path, class: 'scattered' }), create('path', { d: lowerOutput.path, class: 'scattered' }));
+        for (let s = 22; s < topOutput.length; s += 44) {
+          const a = pointAt(topHit, outgoingTop, s);
+          const b = pointAt(lowerHit, outgoingLower, s);
+          wavefrontLayer.append(create('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: 'wavefront', opacity: values.isMatch ? '.9' : '.28' }));
+        }
+        const peakRadius = 7 + values.intensity * 14;
+        peak.setAttribute('r', peakRadius.toFixed(2));
+        peak.setAttribute('opacity', (.24 + values.intensity * .76).toFixed(2));
+        peakRing.setAttribute('r', (13 + values.intensity * 19).toFixed(2));
+        peakRing.setAttribute('opacity', (.18 + values.intensity * .72).toFixed(2));
+        if (animationEnabled) frame = requestAnimationFrame(render);
+      };
+      const update = () => { if (!animationEnabled) render(performance.now()); };
+      [lambdaInput, thetaInput].forEach(input => input.addEventListener('input', update));
+      matchButton.addEventListener('click', () => {
+        const lambda = Number(lambdaInput.value);
+        const theta = Math.asin(lambda / (2 * dSpacing)) * 180 / Math.PI;
+        thetaInput.value = Math.max(Number(thetaInput.min), Math.min(Number(thetaInput.max), theta)).toFixed(1);
+        update();
+      });
+      pauseButton.addEventListener('click', () => {
+        animationEnabled = !animationEnabled;
+        pauseButton.textContent = animationEnabled ? '暂停波动动画' : '继续波动动画';
+        pauseButton.setAttribute('aria-pressed', String(!animationEnabled));
+        if (animationEnabled) { startTime = performance.now(); if (frame) cancelAnimationFrame(frame); frame = requestAnimationFrame(render); }
+        else if (frame) { cancelAnimationFrame(frame); frame = null; render(performance.now()); }
+      });
+      const snapshot = () => {
+        const values = metrics();
+        return {
+          wavelength_angstrom: Number(values.lambda.toFixed(2)),
+          incident_angle_degrees: Number(values.theta.toFixed(1)),
+          d_spacing_angstrom: dSpacing,
+          path_difference_angstrom: Number(values.delta.toFixed(3)),
+          path_difference_over_lambda: Number(values.ratio.toFixed(3)),
+          nearest_order: values.order,
+          constructive_interference: values.isMatch,
+          relative_peak_intensity_percent: Math.round(values.intensity * 100)
+        };
+      };
+      const setParameters = async input => {
+        const lambda = Number(input?.wavelength_angstrom);
+        const theta = Number(input?.incident_angle_degrees);
+        if (!Number.isFinite(lambda) || !Number.isFinite(theta)) throw new Error('波长和入射角必须是数值。');
+        if (lambda < Number(lambdaInput.min) || lambda > Number(lambdaInput.max)) throw new Error(`中子波长需在 ${lambdaInput.min}–${lambdaInput.max} Å 之间。`);
+        if (theta < Number(thetaInput.min) || theta > Number(thetaInput.max)) throw new Error(`入射角需在 ${thetaInput.min}–${thetaInput.max}° 之间。`);
+        lambdaInput.value = lambda.toFixed(2);
+        thetaInput.value = theta.toFixed(1);
+        update();
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        return snapshot();
+      };
+      const context = document.modelContext;
+      if (context?.registerTool) {
+        const lifecycle = new AbortController();
+        const register = tool => Promise.resolve(context.registerTool(tool, { signal: lifecycle.signal })).catch(() => {});
+        register({
+          name: 'get_diffraction_state',
+          title: '读取中子衍射状态',
+          description: '读取当前中子波长、入射角、路径差、布拉格级次和预测亮峰强度。',
+          inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+          annotations: { readOnlyHint: true, untrustedContentHint: false },
+          execute: () => snapshot()
+        });
+        register({
+          name: 'set_diffraction_parameters',
+          title: '设置中子衍射参数',
+          description: '设置中子波长和入射角，并更新可见的路径差、相位关系和衍射亮峰。',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              wavelength_angstrom: { type: 'number', minimum: .8, maximum: 2.8, description: '中子波长，单位 Å。' },
+              incident_angle_degrees: { type: 'number', minimum: 5, maximum: 27, description: '入射角，单位度。' }
+            },
+            required: ['wavelength_angstrom', 'incident_angle_degrees'],
+            additionalProperties: false
+          },
+          annotations: { readOnlyHint: false, untrustedContentHint: false },
+          execute: setParameters
+        });
+        window.addEventListener('pagehide', () => lifecycle.abort(), { once: true });
+      }
+      if (reduceMotion) { animationEnabled = false; pauseButton.disabled = true; pauseButton.textContent = '已静止显示'; }
+      render(performance.now());
+    })();
+  </script>
+</body>
+</html>
+
