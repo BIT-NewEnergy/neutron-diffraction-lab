@@ -90,8 +90,27 @@
     .track { height: 10px; overflow: hidden; border-radius: 999px; background: #18344f; }
     .fill { height: 100%; width: 0%; border-radius: inherit; background: linear-gradient(90deg, var(--orange-deep), var(--orange)); transition: width .18s ease; }
     .footer-note { margin: 12px 2px 0; color: var(--muted); font-size: .8rem; line-height: 1.5; }
+    .qa-panel { margin-top: 18px; padding: 24px; }
+    .qa-heading { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
+    .qa-heading h2 { margin: 0; font-size: 1.15rem; }
+    .qa-heading p { margin: 6px 0 0; max-width: 46rem; color: var(--muted); line-height: 1.55; }
+    .qa-status { flex: 0 0 auto; padding: 7px 10px; border: 1px solid rgba(158, 228, 147, .42); border-radius: 999px; color: var(--green); background: rgba(158, 228, 147, .07); font-size: .78rem; white-space: nowrap; }
+    .qa-form { display: flex; gap: 10px; margin-top: 16px; }
+    .qa-input { flex: 1; min-width: 0; min-height: 46px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; outline: none; color: var(--ink); background: rgba(5,16,29,.46); }
+    .qa-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(106,198,255,.12); }
+    .qa-submit { min-height: 46px; padding: 10px 17px; border: 1px solid rgba(106,198,255,.62); border-radius: 10px; color: #061221; background: var(--blue); font-weight: 750; }
+    .qa-submit:hover { background: #98dcff; }
+    .qa-examples { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 13px; }
+    .qa-examples > span { color: var(--muted); font-size: .8rem; }
+    .qa-chip { padding: 7px 10px; border: 1px solid rgba(66,100,128,.72); border-radius: 999px; color: var(--ink); background: rgba(5,16,29,.3); font-size: .8rem; }
+    .qa-chip:hover { border-color: var(--blue); color: var(--blue); }
+    .qa-answer { margin-top: 17px; padding: 15px 16px; border: 1px solid rgba(106,198,255,.32); border-radius: 13px; background: rgba(6,25,45,.72); }
+    .qa-answer[hidden] { display: none; }
+    .answer-kicker { margin: 0 0 6px; color: var(--blue); font-size: .78rem; font-weight: 750; letter-spacing: .06em; }
+    .answer-text { margin: 0; color: var(--ink); line-height: 1.7; white-space: pre-line; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     @media (max-width: 980px) { .workspace { grid-template-columns: 1fr; } .diagram-panel { min-height: 0; } .controls-panel { gap: 16px; } }
-    @media (max-width: 640px) { .app { width: min(100% - 24px, 1440px); padding-top: 18px; } .topbar { align-items: start; flex-direction: column; } .panel-heading { padding: 18px 18px 6px; } .match-chip { display: none; } .controls-panel { padding: 18px; } .beamline { min-height: 350px; padding: 0 2px 8px; } }
+    @media (max-width: 640px) { .app { width: min(100% - 24px, 1440px); padding-top: 18px; } .topbar { align-items: start; flex-direction: column; } .panel-heading { padding: 18px 18px 6px; } .match-chip { display: none; } .controls-panel, .qa-panel { padding: 18px; } .beamline { min-height: 350px; padding: 0 2px 8px; } .qa-heading, .qa-form { flex-direction: column; } .qa-status, .qa-submit { width: 100%; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
   </style>
 </head>
@@ -183,6 +202,35 @@
         </div>
       </aside>
     </section>
+    <section class="panel qa-panel" aria-labelledby="qaTitle">
+      <header class="qa-heading">
+        <div>
+          <p class="eyebrow">Study Q&amp;A</p>
+          <h2 id="qaTitle">中子衍射学习问答</h2>
+          <p>输入关于原理、布拉格条件、峰形或锂电池研究的问题；学习助手会基于本站知识库给出解释。</p>
+        </div>
+        <span class="qa-status">免费 · 无需登录</span>
+      </header>
+      <form id="qaForm" aria-label="中子衍射学习提问">
+        <label for="qaInput" class="sr-only">输入你的中子衍射问题</label>
+        <div class="qa-form">
+          <input id="qaInput" class="qa-input" type="text" autocomplete="off" placeholder="例如：为什么路径差等于 nλ 时会出现亮峰？">
+          <button class="qa-submit" type="submit">获取解释</button>
+        </div>
+      </form>
+      <div class="qa-examples" aria-label="示例问题">
+        <span>可试试：</span>
+        <button class="qa-chip" type="button" data-question="为什么路径差等于 nλ 时会出现亮峰？">为什么出现亮峰？</button>
+        <button class="qa-chip" type="button" data-question="d、θ 和 λ 分别代表什么？">d、θ、λ 怎么理解？</button>
+        <button class="qa-chip" type="button" data-question="中子衍射为什么适合研究锂离子电池？">为什么研究锂电池？</button>
+        <button class="qa-chip" type="button" data-question="峰位、峰宽和峰强各说明什么？">峰位、峰宽、峰强</button>
+        <button class="qa-chip" type="button" data-question="当前参数是否满足布拉格条件？">检查当前参数</button>
+      </div>
+      <article id="qaAnswer" class="qa-answer" aria-live="polite">
+        <p class="answer-kicker">学习助手</p>
+        <p id="qaAnswerText" class="answer-text">从上面的示例开始，或直接输入你的问题。我会把抽象的衍射概念与当前动画中的 λ、θ、d 和亮峰联系起来。</p>
+      </article>
+    </section>
     <p class="footer-note">布拉格条件：ΔL = 2d sinθ = nλ。图中采用两束波代表多个相邻原子面的相干散射。</p>
   </main>
 
@@ -211,6 +259,10 @@
       const peakRing = document.getElementById('peakRing');
       const matchButton = document.getElementById('matchButton');
       const pauseButton = document.getElementById('pauseButton');
+      const qaForm = document.getElementById('qaForm');
+      const qaInput = document.getElementById('qaInput');
+      const qaAnswer = document.getElementById('qaAnswer');
+      const qaAnswerText = document.getElementById('qaAnswerText');
       const ns = 'http://www.w3.org/2000/svg';
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let animationEnabled = !reduceMotion;
@@ -257,6 +309,35 @@
         const phaseDeg = Math.abs(offset * 360);
         const intensity = Math.pow(Math.cos(Math.PI * offset), 2);
         return { lambda, theta, thetaRad, delta, ratio, order, offset, phaseDeg, intensity, isMatch: Math.abs(offset) < .055 };
+      };
+      const answerQuestion = rawQuestion => {
+        const question = rawQuestion.trim();
+        const q = question.toLowerCase();
+        const has = (...terms) => terms.some(term => q.includes(term));
+        const values = metrics();
+        const current = `当前动画中 λ = ${values.lambda.toFixed(2)} Å，θ = ${values.theta.toFixed(1)}°，因此 ΔL = ${values.delta.toFixed(2)} Å = ${values.ratio.toFixed(2)}λ。`;
+        let answer;
+        if (!question) {
+          answer = '请输入一个具体问题，例如“为什么会出现亮峰？”或“峰宽说明什么？”。';
+        } else if (has('当前', '此时', '现在', '参数', '是否满足', '是否匹配')) {
+          answer = `${current}\n${values.isMatch ? `路径差接近 ${values.order}λ，两个散射波同相抵达探测器，属于相长干涉，亮峰增强。` : `路径差没有恰好落在整数倍波长上，散射波存在 ${values.phaseDeg.toFixed(1)}° 相位偏差，所以峰强低于理想相长干涉时。`}`;
+        } else if (has('布拉格', '亮峰', '相长', '路径差', '干涉', 'nλ', '整数倍')) {
+          answer = '相邻原子面散射的两束中子波会走过不同的路程，路径差为 ΔL = 2d sinθ。当 ΔL = nλ（n 为整数）时，一束的波峰会与另一束的波峰对齐，振幅相加，探测器上就出现明显的衍射亮峰；若不是整数倍，则会部分或完全相消。';
+        } else if (has('d、θ', 'd θ', 'd和', '晶面间距', '入射角', '波长', 'λ')) {
+          answer = 'd 是相邻晶面的间距；θ 是中子束与晶面的入射角；λ 是中子的德布罗意波长。三者由 2d sinθ = nλ 联系：在 d 固定时，增大 λ 需要增大 θ 才能保持同一级亮峰。探测器通常记录的散射角为 2θ。';
+        } else if (has('峰位', '峰宽', '峰形', '峰强', '强度', '半高宽')) {
+          answer = '峰位主要对应晶面间距 d：d 改变会使峰发生移动。峰强与原子占位、散射长度、取向等有关。峰宽增大常意味着尺寸变小、微应变或结构无序增强。峰形变化、分裂或出现肩峰，可能提示相共存、相变或局部结构重排。判断时需要结合全谱拟合，而不能只凭单个峰下结论。';
+        } else if (has('锂', '电池', '811', 'ncm', 'nmc', '正极', '迁移')) {
+          answer = '中子对轻元素（包括锂）具有较好的散射对比，并且穿透深度较大，因此适合研究电池材料的体相结构。在充放电原位衍射中，可以跟踪晶格参数、相变、占位变化和峰形演化，从而间接认识锂离子嵌入/脱出引起的结构响应。需要注意：衍射主要给出平均结构信息，锂的具体迁移路径通常还需结合结构精修、计算或其他谱学方法。';
+        } else if (has('x射线', 'x-ray', 'xray', '电子衍射', '区别', '优势')) {
+          answer = 'X 射线主要与电子云相互作用，重元素往往更显著；中子主要与原子核相互作用，轻元素的对比度可能更好，并且还能探测磁性有序。中子也有较强穿透能力，适合研究体相或原位电池样品。不同元素的中子散射长度并不随原子序数简单递增，因此常与 X 射线形成互补。';
+        } else if (has('怎么', '如何', '调节', '操作', '滑杆')) {
+          answer = '先固定波长 λ，拖动入射角 θ，观察 ΔL/λ 是否接近整数；当状态提示“匹配”时，亮峰最强。也可点击“智能匹配一阶亮峰”，网站会按照当前 λ 自动计算满足 n = 1 的 θ。然后再改变 λ，比较为保持亮峰而需要怎样改变 θ。';
+        } else {
+          answer = '我目前的知识库重点覆盖：布拉格条件、相长干涉、d/θ/λ 的含义、探测器亮峰、峰位与峰宽、以及中子衍射在锂离子电池中的应用。你可以把问题换成其中一个关键词，例如“为什么有亮峰？”、“峰宽说明什么？”或“为什么中子能看锂？”。';
+        }
+        qaAnswerText.textContent = answer;
+        qaAnswer.hidden = false;
       };
       const render = now => {
         const values = metrics();
@@ -341,6 +422,17 @@
         pauseButton.setAttribute('aria-pressed', String(!animationEnabled));
         if (animationEnabled) { startTime = performance.now(); if (frame) cancelAnimationFrame(frame); frame = requestAnimationFrame(render); }
         else if (frame) { cancelAnimationFrame(frame); frame = null; render(performance.now()); }
+      });
+      qaForm.addEventListener('submit', event => {
+        event.preventDefault();
+        answerQuestion(qaInput.value);
+      });
+      document.querySelectorAll('[data-question]').forEach(button => {
+        button.addEventListener('click', () => {
+          const question = button.dataset.question || '';
+          qaInput.value = question;
+          answerQuestion(question);
+        });
       });
       const snapshot = () => {
         const values = metrics();
